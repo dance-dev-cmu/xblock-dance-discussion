@@ -31,8 +31,15 @@ def exec_query(query, prefix_msg = ""):
     cursor.close()
 
 
-def make_db_connection():
+def setup_db():
     global db
+    config_file = open("db_settings.txt", 'r')
+    config = dict()
+    for line in config_file:
+        (key, value) = line.strip(' \t\r\n').split(':', 1);
+        config[str(key).strip()] = str(value).strip()
+    print config
+    config_file.close()
     db = db_connector.connect(**s.database)
     """
     settings.py contains a dictionary of key value pairs that define the mysql user name + password, the host on
@@ -45,4 +52,6 @@ def make_db_connection():
     test_query = ("INSERT INTO discussion_table (thread_id, user_id, comment, parent_id) VALUES (1, 11, 'Akash made this comment', 1)")
     exec_query( test_query, "Table Insert Query")
 
-make_db_connection()
+setup_db()
+
+db.close()
